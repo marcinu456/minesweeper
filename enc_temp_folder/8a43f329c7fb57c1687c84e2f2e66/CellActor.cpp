@@ -60,10 +60,9 @@ void ACellActor::Tick(float DeltaTime)
 void ACellActor::Clicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Some warning message"));
-	//CellVisible = true;
+	CellVisible = true;
 	StaticMeshComponent->SetMaterial(0, RedColorOfCell);
 	EndCursorOverMaterial = RedColorOfCell;
-	UE_LOG(LogTemp, Warning, TEXT(" Clicked PosX=%d, PosY=%d"), CellX, CellY);
 
 	GridActorManager->odkryj_plansze(CellX, CellY);
 }

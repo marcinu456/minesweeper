@@ -24,7 +24,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-
+	UPROPERTY()
 	TArray<ACellActor*> CellActors; //row-major
 
 /** Width of grid in number of cells. */
@@ -33,6 +33,10 @@ public:
 	/** Height of grid in number of cells. */
 	UPROPERTY(EditAnywhere, meta = (ClampMin = "1", AllowPrivateAccess = "true", Category = "Grid Setup"))
 		int32 Height = 50;
+	/** Class for cell. */
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Grid Setup"))
+		int32 Mines = 10;
+
 	/** Offset between cells. */
 	UPROPERTY(EditAnywhere, meta = (ClampMin = "0.0", AllowPrivateAccess = "true", Category = "Grid Setup"))
 		float Offset = 15.0;
@@ -40,6 +44,7 @@ public:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Grid Setup"))
 		TSubclassOf<ACellActor> CellActor;
 
+	void odkryj_plansze(int32 x, int32 y);
 
 private:
 	UFUNCTION()
@@ -56,6 +61,5 @@ private:
 	
 	bool PlaceMines(int32 poz_x, int32 poz_y);
 
-	void odkryj_plansze(int32 x, int32 y);
 
 };

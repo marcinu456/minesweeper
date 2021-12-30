@@ -40,9 +40,10 @@ void AGridActor::BeginPlay()
 		for (int j = 0; j < Width; j++) {
 			const FVector Loc(TopLeft.X - i * XStep, TopLeft.Y + j * YStep, Origin.Z );
 			ACellActor* const SpawnedActorRef = GetWorld()->SpawnActor<ACellActor>(CellActor, Loc, GetActorRotation());
-			SpawnedActorRef->SetCellPlace(i, j);
+			SpawnedActorRef->SetCellPlace(j, i);
 			SpawnedActorRef->SetCellValue(0);
 			SpawnedActorRef->SetCellVisible(false);
+			SpawnedActorRef->SetGridActorManager(this);
 			CellActors.Add(SpawnedActorRef);
 		}
 	}
@@ -135,44 +136,44 @@ void AGridActor::SetAliveNeighbors(const int32 i, const int32 j)
 
 void AGridActor::RandomPosition()
 {
-	int poz_x, poz_y;
-	int ilosc = 10;
+	int32 PosX, PosY;
+	int32 MinesToPlace = Mines;
 
 
 
-	while (ilosc > 0)
+	while (MinesToPlace > 0)
 	{
-		poz_x = FMath::RandRange(0, Width-1);
-		poz_y = FMath::RandRange(0, Height-1);
+		PosX = FMath::RandRange(0, Width-1);
+		PosY = FMath::RandRange(0, Height-1);
 		
-		if (CellActors[poz_y * Width + poz_x]->GetCellValue() != 9)
+		if (CellActors[PosX * Width + PosY]->GetCellValue() != 9)
 		{
-			PlaceMines(poz_x, poz_y);
-			ilosc--;
+			PlaceMines(PosX, PosY);
+			MinesToPlace--;
 		}
 	}
 }
 
-bool AGridActor::PlaceMines(int32 poz_x, int32 poz_y)
+bool AGridActor::PlaceMines(int32 PosX, int32 PosY)
 {
-	if (CellActors[poz_y * Width + poz_x]->GetCellValue() != 9)
+	if (CellActors[PosX * Width + PosY]->GetCellValue() != 9)
 	{
-		CellActors[poz_y * Width + poz_x]->SetCellValue(9); //ustawiamy mine
-		CellActors[poz_y * Width + poz_x]->SetCellColorMine();
+		CellActors[PosX * Width + PosY]->SetCellValue(9); //ustawiamy mine
+		CellActors[PosX * Width + PosY]->SetCellColorMine();
 
 
 
 		for (int k = -1; k < 2; k++)
 			for (int l = -1; l < 2; l++)
 			{
-				if ((poz_x + l) < 0 || (poz_y + k) < 0) continue; //wyjdz bo krawedz
-				if ((poz_x + l) > 9 || (poz_y + k) > 9) continue; //wyjdz bo krawedz
+				if ((PosX + l) < 0 || (PosY + k) < 0) continue; //wyjdz bo krawedz
+				if ((PosX + l) > Width - 1 || (PosY + k) > Height - 1) continue; //wyjdz bo krawedz
 
 
-				if (CellActors[(poz_y + k) * Width + poz_x + l]->GetCellValue() == 9) continue; //wyjdz bo mina
-				int32 TempValue = CellActors[(poz_y + k) * Width + poz_x + l]->GetCellValue();
-				CellActors[(poz_y + k) * Width + poz_x + l]->SetCellValue(TempValue + 1);
-				CellActors[(poz_y + k) * Width + poz_x + l]->SetCellColor();
+				if (CellActors[(PosX + l) * Width + PosY + k]->GetCellValue() == 9) continue; //wyjdz bo mina
+				int32 TempValue = CellActors[(PosX + l) * Width + PosY + k]->GetCellValue();
+				CellActors[(PosX + l) * Width + PosY + k]->SetCellValue(TempValue + 1);
+				CellActors[(PosX + l) * Width + PosY + k]->SetCellColor();
 
 			}
 	}
@@ -181,27 +182,27 @@ bool AGridActor::PlaceMines(int32 poz_x, int32 poz_y)
 }
 
 
-void AGridActor::odkryj_plansze(int32 x, int32 y)
+void AGridActor::odkryj_plansze(int32 PosX, int32 PosY)
 {
-	//if (x < 0 || x>9) return; // poza tablic¹ wyjœcie
-	//if (y < 0 || y>9) return; // poza tablic¹ wyjœcie
-	//if (plansza[x][y].odkryte == true) return;  // ju¿ odkryte wyjœcie
-	//
-	//if (plansza[x][y].wartosc != 9 && plansza[x][y].odkryte == false)
-	//	plansza[x][y].odkryte = true;   // odkryj!
-	//
-	//if (plansza[x][y].wartosc != 0) return; // wartoœæ > 0 wyjœcie
-	//
-	////wywo³anie funkcji dla ka¿dego s¹siada
-	//odkryj_plansze(x - 1, y - 1);
-	//odkryj_plansze(x - 1, y);
-	//odkryj_plansze(x - 1, y + 1);
-	//odkryj_plansze(x + 1, y - 1);
-	//odkryj_plansze(x + 1, y);
-	//odkryj_plansze(x + 1, y + 1);
-	//odkryj_plansze(x, y - 1);
-	//odkryj_plansze(x, y);
-	//odkryj_plansze(x, y + 1);
-}
+	if (PosX < 0 || PosX>Width - 1) return; // poza tablic¹ wyjœcie
+	if (PosY < 0 || PosY>Height - 1) return; // poza tablic¹ wyjœcie
+	if (CellActors[PosX * Width + PosY]->GetCellVisible() == true) return;  // ju¿ odkryte wyjœcie
 
+	if (CellActors[PosX * Width + PosY]->GetCellValue() != 9 && CellActors[PosX * Width + PosY]->GetCellVisible() == false)
+		CellActors[PosX * Width + PosY]->SetCellVisible(true);   // odkryj!
+
+	if (CellActors[PosX * Width + PosY]->GetCellValue() != 0) return; // wartoœæ > 0 wyjœcie
+
+	//wywo³anie funkcji dla ka¿dego s¹siada
+	odkryj_plansze(PosX - 1, PosY - 1);
+	odkryj_plansze(PosX - 1, PosY);
+	odkryj_plansze(PosX - 1, PosY + 1);
+	odkryj_plansze(PosX + 1, PosY - 1);
+	odkryj_plansze(PosX + 1, PosY);
+	odkryj_plansze(PosX + 1, PosY + 1);
+	odkryj_plansze(PosX, PosY - 1);
+	odkryj_plansze(PosX, PosY);
+	odkryj_plansze(PosX, PosY + 1);
+}
+//TODO napraw odkrywanie planszy
 //TODO odkrywanie planszy, menu trudnoœci, umieszczanie min po pierwszym kliknieciu

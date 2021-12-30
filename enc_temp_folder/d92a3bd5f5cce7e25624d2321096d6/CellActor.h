@@ -38,15 +38,11 @@ public:
 
 	bool GetCellVisible()
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GetCellVisible PosX=%d, PosY=%d"), CellX, CellY);
-
 		return CellVisible;
 	}
 
 	void SetCellVisible(bool _CellVisible) {
 		CellVisible = _CellVisible;
-		UE_LOG(LogTemp, Warning, TEXT("SetCellVisible PosX=%d, PosY=%d"), CellX, CellY);
-
 	}
 
 	void SetCellColor() {
