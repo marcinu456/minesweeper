@@ -9,4 +9,6 @@ ABasePlayerController::ABasePlayerController()
 	bEnableClickEvents = true;
 	bEnableMouseOverEvents = true;
 	bEnableTouchOverEvents = true;
+	ClickEventKeys.Add(EKeys::RightMouseButton);
+	ClickEventKeys.Add(EKeys::RightMouseButton);
 }

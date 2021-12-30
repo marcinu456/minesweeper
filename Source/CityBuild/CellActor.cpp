@@ -23,15 +23,21 @@ ACellActor::ACellActor()
 	OnClickedDelegate.BindUFunction(this, "Clicked");
 	OnBeginCursorOverDelegate.BindUFunction(this, "BeginCursorOver");
 	OnEndCursorOverDelegate.BindUFunction(this, "EndCursorOver");
-	OnClicked.Add(OnClickedDelegate);
+	OnClicked.AddUnique(OnClickedDelegate);
 	OnBeginCursorOver.Add(OnBeginCursorOverDelegate);
 	OnEndCursorOver.Add(OnEndCursorOverDelegate);
+	
+	//OnClicked.AddUnique()
+
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshAsset(TEXT("/Game/Materials/Shape_Sphere.Shape_Sphere"));
 	if (SphereMeshAsset.Succeeded())
 	{
 		StaticMeshComponent->SetStaticMesh(SphereMeshAsset.Object);
 	}
+
+	bCellVisible = false;
+	bCellFlag = false;
 }
 
 // Called when the game starts or when spawned
@@ -50,22 +56,27 @@ void ACellActor::BeginPlay()
 void ACellActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if(CellVisible)
-	{
-		StaticMeshComponent->SetMaterial(0, RedColorOfCell);
-		EndCursorOverMaterial = RedColorOfCell;
-	}
+
 }
 
-void ACellActor::Clicked()
+void ACellActor::Clicked(UPrimitiveComponent* touchedComponent, FKey buttonPressed)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Some warning message"));
-	//CellVisible = true;
-	StaticMeshComponent->SetMaterial(0, RedColorOfCell);
-	EndCursorOverMaterial = RedColorOfCell;
-	UE_LOG(LogTemp, Warning, TEXT(" Clicked PosX=%d, PosY=%d"), CellX, CellY);
+	if (buttonPressed == EKeys::LeftMouseButton && !bCellFlag) {
+		//CellVisible = true;
+		StaticMeshComponent->SetMaterial(0, RedColorOfCell);
+		EndCursorOverMaterial = RedColorOfCell;
+		UE_LOG(LogTemp, Warning, TEXT(" Clicked PosX=%d, PosY=%d"), CellX, CellY);
 
-	GridActorManager->odkryj_plansze(CellX, CellY);
+
+		GridActorManager->SetupMines(CellX,CellY);
+
+		GridActorManager->ShowGrid(CellX, CellY);
+	}
+	else if (buttonPressed == EKeys::RightMouseButton)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Some warning message"));
+		SetFlag();
+	}
 }
 
 

@@ -40,13 +40,14 @@ public:
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GetCellVisible PosX=%d, PosY=%d"), CellX, CellY);
 
-		return CellVisible;
+		return bCellVisible;
 	}
 
 	void SetCellVisible(bool _CellVisible) {
-		CellVisible = _CellVisible;
+		bCellVisible = _CellVisible;
 		UE_LOG(LogTemp, Warning, TEXT("SetCellVisible PosX=%d, PosY=%d"), CellX, CellY);
-
+		StaticMeshComponent->SetMaterial(0, RedColorOfCell);
+		EndCursorOverMaterial = RedColorOfCell;
 	}
 
 	void SetCellColor() {
@@ -65,6 +66,11 @@ public:
 		GridActorManager = _GridActorManager;
 	}
 
+	bool GetCellFlag()
+	{
+		return bCellFlag;
+	}
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -77,11 +83,30 @@ public:
 	FORCEINLINE class UStaticMeshComponent* GetStaticMesh() const { return StaticMeshComponent; }
 private:
 	UFUNCTION()
-		void Clicked();
+		void Clicked(UPrimitiveComponent* touchedComponent, FKey buttonPressed);
 	UFUNCTION()
 		void BeginCursorOver();
 	UFUNCTION()
 		void EndCursorOver();
+
+	void SetFlag()
+	{
+		if(bCellFlag)
+		{
+			bCellFlag = false;
+			StaticMeshComponent->SetMaterial(0, GreenColorOfCell);
+			EndCursorOverMaterial = LastColorOfCell;
+		}
+		else
+		{
+			bCellFlag = true;
+			LastColorOfCell = StaticMeshComponent->GetMaterial(0);
+
+			StaticMeshComponent->SetMaterial(0, FlagColorOfCell);
+			EndCursorOverMaterial = FlagColorOfCell;
+		}
+		
+	}
 
 	int32 CellX;
 	int32 CellY;
@@ -110,10 +135,16 @@ private:
 		UMaterialInterface* BlueColorOfCell;
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
 		UMaterialInterface* RedColorOfCell;
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
+		UMaterialInterface* FlagColorOfCell;
+	//UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
+		UMaterialInterface* LastColorOfCell;
 
 	int32 CellValue;
 
-	bool CellVisible;
+	bool bCellVisible;
+
+	bool bCellFlag;
 
 	UPROPERTY()
 	class AGridActor* GridActorManager;

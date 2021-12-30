@@ -44,22 +44,27 @@ public:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Grid Setup"))
 		TSubclassOf<ACellActor> CellActor;
 
-	void odkryj_plansze(int32 x, int32 y);
+	void ShowGrid(int32 x, int32 y);
+
+
+	void SetupMines(int32& FirstPosX, int32& FirstPosY)
+	{
+		if(!bSetupMines)
+		{
+			RandomPosition(FirstPosX, FirstPosY);
+			bSetupMines = true;
+		}
+	}
 
 private:
 	UFUNCTION()
 		void Clicked();
 
-	void WaitForFirst();
 
-	bool first = false;
+	void RandomPosition(int32& FirstPosX, int32& FirstPosY);
 
-	int32 CountAliveNeighbors(const int32 i, const int32 j);
-	void SetAliveNeighbors(const int32 i, const int32 j);
-
-	void RandomPosition();
 	
 	bool PlaceMines(int32 poz_x, int32 poz_y);
 
-
+	bool bSetupMines;
 };

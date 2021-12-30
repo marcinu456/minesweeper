@@ -12,6 +12,8 @@ AGridActor::AGridActor()
 	FScriptDelegate OnClickedDelegate;
 	OnClickedDelegate.BindUFunction(this, "Clicked");
 	OnClicked.Add(OnClickedDelegate);
+
+	bSetupMines = false;
 }
 
 // Called when the game starts or when spawned
@@ -42,47 +44,17 @@ void AGridActor::BeginPlay()
 			ACellActor* const SpawnedActorRef = GetWorld()->SpawnActor<ACellActor>(CellActor, Loc, GetActorRotation());
 			SpawnedActorRef->SetCellPlace(j, i);
 			SpawnedActorRef->SetCellValue(0);
-			SpawnedActorRef->SetCellVisible(false);
 			SpawnedActorRef->SetGridActorManager(this);
 			CellActors.Add(SpawnedActorRef);
 		}
 	}
 
-	RandomPosition();
 }
 
 // Called every frame
 void AGridActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//if(first)
-	//{
-		Clicked();
-	//}
-	//else
-	//{
-		//WaitForFirst();
-	//}
-}
-
-void AGridActor::WaitForFirst()
-{
-	for (auto& Cell : CellActors)
-	{
-		//if (Cell->GetOccupied())
-		{
-			for (auto& Cello : CellActors)
-			{
-				//Cello->SetPlacable(false);
-			}
-			first = true;
-			int32 i;
-			int32 j;
-			Cell->GetCellPlace(i, j);
-			SetAliveNeighbors(i, j);
-			break;
-		}
-	}
 }
 
 void AGridActor::Clicked()
@@ -95,46 +67,12 @@ void AGridActor::Clicked()
 			int32 i;
 			int32 j;
 			Cell->GetCellPlace(i, j);
-			SetAliveNeighbors(i, j);
 		}
 	}
 }
 
-int AGridActor::CountAliveNeighbors(const int32 i, const int32 j) {
-	int NumAliveNeighbors = 0;
-	for (int k = -1; k <= 1; k++) {
-		for (int l = -1; l <= 1; l++) {
-			if (!(l == 0 && k == 0)) {
-				const int effective_i = i + k;
-				const int effective_j = j + l;
-				if ((effective_i >= 0 && effective_i < Height) && (effective_j >= 0 && effective_j < Width)) {
-					//if (CellActors[effective_j + effective_i * Width]->GetPlacable()) {
-						NumAliveNeighbors++;
-					//}
-				}
-			}
-		}
-	}
-	return NumAliveNeighbors;
-}
 
-void AGridActor::SetAliveNeighbors(const int32 i, const int32 j)
-{
-	for (int32 k = -1; k <= 1; k++) {
-		for (int32 l = -1; l <= 1; l++) {
-			if (!(l == 0 && k == 0)) {
-				const int32 effective_i = i + k;
-				const int32 effective_j = j + l;
-				if ((effective_i >= 0 && effective_i < Height) && (effective_j >= 0 && effective_j < Width)) {
-					//CellActors[effective_j + effective_i * Width]->SetPlacable(true);
-
-				}
-			}
-		}
-	}
-}
-
-void AGridActor::RandomPosition()
+void AGridActor::RandomPosition(int32& FirstPosX, int32& FirstPosY)
 {
 	int32 PosX, PosY;
 	int32 MinesToPlace = Mines;
@@ -146,7 +84,7 @@ void AGridActor::RandomPosition()
 		PosX = FMath::RandRange(0, Width-1);
 		PosY = FMath::RandRange(0, Height-1);
 		
-		if (CellActors[PosX * Width + PosY]->GetCellValue() != 9)
+		if (CellActors[PosX * Height + PosY]->GetCellValue() != 9 && (FirstPosX!= PosX && FirstPosY!=PosY))
 		{
 			PlaceMines(PosX, PosY);
 			MinesToPlace--;
@@ -156,10 +94,10 @@ void AGridActor::RandomPosition()
 
 bool AGridActor::PlaceMines(int32 PosX, int32 PosY)
 {
-	if (CellActors[PosX * Width + PosY]->GetCellValue() != 9)
+	if (CellActors[PosX * Height + PosY]->GetCellValue() != 9)
 	{
-		CellActors[PosX * Width + PosY]->SetCellValue(9); //ustawiamy mine
-		CellActors[PosX * Width + PosY]->SetCellColorMine();
+		CellActors[PosX * Height + PosY]->SetCellValue(9); //ustawiamy mine
+		CellActors[PosX * Height + PosY]->SetCellColorMine();
 
 
 
@@ -170,10 +108,10 @@ bool AGridActor::PlaceMines(int32 PosX, int32 PosY)
 				if ((PosX + l) > Width - 1 || (PosY + k) > Height - 1) continue; //wyjdz bo krawedz
 
 
-				if (CellActors[(PosX + l) * Width + PosY + k]->GetCellValue() == 9) continue; //wyjdz bo mina
-				int32 TempValue = CellActors[(PosX + l) * Width + PosY + k]->GetCellValue();
-				CellActors[(PosX + l) * Width + PosY + k]->SetCellValue(TempValue + 1);
-				CellActors[(PosX + l) * Width + PosY + k]->SetCellColor();
+				if (CellActors[(PosX + l) * Height + PosY + k]->GetCellValue() == 9) continue; //wyjdz bo mina
+				int32 TempValue = CellActors[(PosX + l) * Height + PosY + k]->GetCellValue();
+				CellActors[(PosX + l) * Height + PosY + k]->SetCellValue(TempValue + 1);
+				CellActors[(PosX + l) * Height + PosY + k]->SetCellColor();
 
 			}
 	}
@@ -182,27 +120,27 @@ bool AGridActor::PlaceMines(int32 PosX, int32 PosY)
 }
 
 
-void AGridActor::odkryj_plansze(int32 PosX, int32 PosY)
+void AGridActor::ShowGrid(int32 PosX, int32 PosY)
 {
 	if (PosX < 0 || PosX>Width - 1) return; // poza tablic¹ wyjœcie
 	if (PosY < 0 || PosY>Height - 1) return; // poza tablic¹ wyjœcie
-	if (CellActors[PosX * Width + PosY]->GetCellVisible() == true) return;  // ju¿ odkryte wyjœcie
+	if (CellActors[PosY * Width + PosX]->GetCellVisible() == true || CellActors[PosY * Width + PosX]->GetCellFlag() == true) return;  // ju¿ odkryte wyjœcie
 
-	if (CellActors[PosX * Width + PosY]->GetCellValue() != 9 && CellActors[PosX * Width + PosY]->GetCellVisible() == false)
-		CellActors[PosX * Width + PosY]->SetCellVisible(true);   // odkryj!
+	if (CellActors[PosY * Width + PosX]->GetCellValue() != 9 && CellActors[PosY * Width + PosX]->GetCellVisible() == false)
+		CellActors[PosY * Width + PosX]->SetCellVisible(true);   // odkryj!
 
-	if (CellActors[PosX * Width + PosY]->GetCellValue() != 0) return; // wartoœæ > 0 wyjœcie
+	if (CellActors[PosY * Width + PosX]->GetCellValue() != 0) return; // wartoœæ > 0 wyjœcie
 
 	//wywo³anie funkcji dla ka¿dego s¹siada
-	odkryj_plansze(PosX - 1, PosY - 1);
-	odkryj_plansze(PosX - 1, PosY);
-	odkryj_plansze(PosX - 1, PosY + 1);
-	odkryj_plansze(PosX + 1, PosY - 1);
-	odkryj_plansze(PosX + 1, PosY);
-	odkryj_plansze(PosX + 1, PosY + 1);
-	odkryj_plansze(PosX, PosY - 1);
-	odkryj_plansze(PosX, PosY);
-	odkryj_plansze(PosX, PosY + 1);
+	ShowGrid(PosX - 1, PosY - 1);
+	ShowGrid(PosX - 1, PosY);
+	ShowGrid(PosX - 1, PosY + 1);
+	ShowGrid(PosX + 1, PosY - 1);
+	ShowGrid(PosX + 1, PosY);
+	ShowGrid(PosX + 1, PosY + 1);
+	ShowGrid(PosX, PosY - 1);
+	ShowGrid(PosX, PosY);
+	ShowGrid(PosX, PosY + 1);
 }
 //TODO napraw odkrywanie planszy
 //TODO odkrywanie planszy, menu trudnoœci, umieszczanie min po pierwszym kliknieciu
