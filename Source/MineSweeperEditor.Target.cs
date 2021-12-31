@@ -3,12 +3,12 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class CityBuildEditorTarget : TargetRules
+public class MineSweeperEditorTarget : TargetRules
 {
-	public CityBuildEditorTarget( TargetInfo Target) : base(Target)
+	public MineSweeperEditorTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "CityBuild" } );
+		ExtraModuleNames.AddRange( new string[] { "MineSweeper" } );
 	}
 }

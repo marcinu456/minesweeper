@@ -3,21 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CellActor.h"
 #include "GameFramework/Actor.h"
 #include "GridActor.generated.h"
 
+class ACellActor;
 UCLASS()
-class CITYBUILD_API AGridActor : public AActor
+class MINESWEEPER_API AGridActor : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AGridActor();
 
 	UFUNCTION(BlueprintCallable)
-	int32 GetHowManyFlags()
+		int32 GetHowManyFlags()
 	{
 		return HowManyFlags;
 	}
@@ -30,7 +30,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -47,13 +47,13 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable)
-	void SetupGrid(const int32& Width, const int32& Height, const int32& Mines);
+		void SetupGrid(const int32& Width, const int32& Height, const int32& Mines);
 
 private:
 	UPROPERTY()
-	TArray<ACellActor*> CellActors; //row-major
+		TArray<ACellActor*> CellActors; //row-major
 
-/** Width of grid in number of cells. */
+	/** Width of grid in number of cells. */
 	UPROPERTY(EditAnywhere, meta = (ClampMin = "1", AllowPrivateAccess = "true", Category = "Grid Setup"))
 		int32 Width = 50;
 	/** Height of grid in number of cells. */
@@ -76,7 +76,7 @@ private:
 
 	void RandomPosition(int32& FirstPosX, int32& FirstPosY);
 
-	
+
 	bool PlaceMines(int32 poz_x, int32 poz_y);
 
 	void GameOver();

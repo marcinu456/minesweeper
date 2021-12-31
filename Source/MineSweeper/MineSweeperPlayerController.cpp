@@ -1,14 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BasePlayerController.h"
+#include "MineSweeperPlayerController.h"
 
-ABasePlayerController::ABasePlayerController()
+AMineSweeperPlayerController::AMineSweeperPlayerController()
 {
 	SetShowMouseCursor(true);
 	bEnableClickEvents = true;
 	bEnableMouseOverEvents = true;
 	bEnableTouchOverEvents = true;
-	ClickEventKeys.Add(EKeys::RightMouseButton);
 	ClickEventKeys.Add(EKeys::RightMouseButton);
 }

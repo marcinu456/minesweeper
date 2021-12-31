@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "BasePlayerController.generated.h"
+#include "MineSweeperPlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CITYBUILD_API ABasePlayerController : public APlayerController
+class MINESWEEPER_API AMineSweeperPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
-		ABasePlayerController();
+		AMineSweeperPlayerController();
 };

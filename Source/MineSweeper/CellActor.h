@@ -7,12 +7,13 @@
 #include "CellActor.generated.h"
 
 class AGridActor;
+
 UCLASS()
-class CITYBUILD_API ACellActor : public AActor
+class MINESWEEPER_API ACellActor : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ACellActor();
 
@@ -77,7 +78,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -128,16 +129,16 @@ private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
 		UMaterialInterface* FlagColorOfCell;
 	//UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
-		UMaterialInterface* LastColorOfCell;
+	UMaterialInterface* LastColorOfCell;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, meta = (AllowPrivateAccess = "true", Category = "Cell Setup"))
-	int32 CellValue;
+		int32 CellValue;
 
 	bool bCellVisible;
 
 	bool bCellFlag;
 
 	UPROPERTY()
-	class AGridActor* GridActorManager;
+		class AGridActor* GridActorManager;
 
 };

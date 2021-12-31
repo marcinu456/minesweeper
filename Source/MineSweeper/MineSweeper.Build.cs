@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class CityBuild : ModuleRules
+public class MineSweeper : ModuleRules
 {
-	public CityBuild(ReadOnlyTargetRules Target) : base(Target)
+	public MineSweeper(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	

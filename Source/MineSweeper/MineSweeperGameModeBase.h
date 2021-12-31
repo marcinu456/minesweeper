@@ -4,15 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "CityBuildGameModeBase.generated.h"
+#include "MineSweeperGameModeBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CITYBUILD_API ACityBuildGameModeBase : public AGameModeBase
+class MINESWEEPER_API AMineSweeperGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
 public:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), BlueprintReadWrite, Category = "Points")
 		int32 TotalPoints = 0;

@@ -3,14 +3,14 @@
 
 #include "CellActor.h"
 
-#include "CityBuildGameModeBase.h"
 #include "GridActor.h"
+#include "MineSweeperGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACellActor::ACellActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("CellRootComponent"));
@@ -26,7 +26,7 @@ ACellActor::ACellActor()
 	OnClicked.AddUnique(OnClickedDelegate);
 	OnBeginCursorOver.Add(OnBeginCursorOverDelegate);
 	OnEndCursorOver.Add(OnEndCursorOverDelegate);
-	
+
 	//OnClicked.AddUnique()
 
 
@@ -66,10 +66,10 @@ void ACellActor::Clicked(UPrimitiveComponent* touchedComponent, FKey buttonPress
 		StaticMeshComponent->SetMaterial(0, RedColorOfCell);
 		EndCursorOverMaterial = RedColorOfCell;
 
-		if(CellValue ==9 )
+		if (CellValue == 9)
 		{
 			StaticMeshComponent->SetMaterial(0, BlueColorOfCell);
-			ACityBuildGameModeBase* GameMode = Cast< ACityBuildGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+			AMineSweeperGameModeBase* GameMode = Cast< AMineSweeperGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 			GameMode->GameOver = true;
 
 		}
@@ -78,7 +78,7 @@ void ACellActor::Clicked(UPrimitiveComponent* touchedComponent, FKey buttonPress
 
 		//UE_LOG(LogTemp, Warning, TEXT(" Clicked PosX=%d, PosY=%d"), CellX, CellY);
 
-		GridActorManager->SetupMines(CellX,CellY);
+		GridActorManager->SetupMines(CellX, CellY);
 
 		GridActorManager->ShowGrid(CellX, CellY);
 	}
@@ -98,7 +98,7 @@ void ACellActor::EndCursorOver()
 {
 
 	//if (!Occupied) {
-		StaticMeshComponent->SetMaterial(0, EndCursorOverMaterial);
+	StaticMeshComponent->SetMaterial(0, EndCursorOverMaterial);
 	//}
 	//else {
 	//	StaticMeshComponent->SetMaterial(0, BlueColorOfCell);
@@ -111,7 +111,7 @@ void ACellActor::SetFlag()
 	if (bCellFlag && GridActorManager->GetHowManyFlags() >= 0)
 	{
 		bCellFlag = false;
-		if (!bCellVisible) 
+		if (!bCellVisible)
 		{
 			StaticMeshComponent->SetMaterial(0, GreenColorOfCell);
 			EndCursorOverMaterial = GreenColorOfCell;
@@ -137,4 +137,6 @@ void ACellActor::SetFlag()
 	}
 
 }
+
+
 
