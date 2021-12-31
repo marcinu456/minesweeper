@@ -21,5 +21,12 @@ public:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), BlueprintReadWrite, Category = "Points")
 		bool GameOver = false;
 
+	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"), BlueprintReadWrite, Category = "Points")
+		class AGridActor* GridActor;
 
+	void SetGridActor(AGridActor* _GridActor);
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 };

@@ -33,7 +33,6 @@ public:
 	}
 
 	void SetCellValue(int32 _CellValue) {
-
 		CellValue = _CellValue;
 		SetValueToWidget();
 	}

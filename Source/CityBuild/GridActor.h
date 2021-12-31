@@ -16,6 +16,15 @@ public:
 	// Sets default values for this actor's properties
 	AGridActor();
 
+	int32 GetHowManyFlags()
+	{
+		return HowManyFlags;
+	}
+	void SetHowManyFlags(int32 _HowManyFlags)
+	{
+		HowManyFlags = _HowManyFlags;
+	}
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -24,6 +33,22 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void ShowGrid(int32 x, int32 y);
+
+
+	void SetupMines(int32& FirstPosX, int32& FirstPosY)
+	{
+		if (!bSetupMines)
+		{
+			RandomPosition(FirstPosX, FirstPosY);
+			bSetupMines = true;
+		}
+	}
+
+	UFUNCTION(BlueprintCallable)
+	void SetupGrid(const int32& Width, const int32& Height, const int32& Mines);
+
+private:
 	UPROPERTY()
 	TArray<ACellActor*> CellActors; //row-major
 
@@ -44,21 +69,8 @@ public:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Grid Setup"))
 		TSubclassOf<ACellActor> CellActor;
 
-	void ShowGrid(int32 x, int32 y);
-
-
-	void SetupMines(int32& FirstPosX, int32& FirstPosY)
-	{
-		if(!bSetupMines)
-		{
-			RandomPosition(FirstPosX, FirstPosY);
-			bSetupMines = true;
-		}
-	}
 
 private:
-	UFUNCTION()
-		void Clicked();
 
 
 	void RandomPosition(int32& FirstPosX, int32& FirstPosY);
@@ -67,4 +79,8 @@ private:
 	bool PlaceMines(int32 poz_x, int32 poz_y);
 
 	bool bSetupMines;
+
+	int32 HowManyToGo;
+
+	int32 HowManyFlags;
 };

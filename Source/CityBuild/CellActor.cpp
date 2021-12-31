@@ -72,7 +72,7 @@ void ACellActor::Clicked(UPrimitiveComponent* touchedComponent, FKey buttonPress
 
 		StaticMeshComponent->SetMaterial(0, RedColorOfCell);
 		EndCursorOverMaterial = RedColorOfCell;
-		UE_LOG(LogTemp, Warning, TEXT(" Clicked PosX=%d, PosY=%d"), CellX, CellY);
+		//UE_LOG(LogTemp, Warning, TEXT(" Clicked PosX=%d, PosY=%d"), CellX, CellY);
 
 		GridActorManager->SetupMines(CellX,CellY);
 
@@ -100,6 +100,30 @@ void ACellActor::EndCursorOver()
 	//else {
 	//	StaticMeshComponent->SetMaterial(0, BlueColorOfCell);
 	//}
+
+}
+
+void ACellActor::SetFlag()
+{
+	if (bCellFlag && GridActorManager->GetHowManyFlags() >= 0)
+	{
+		bCellFlag = false;
+		StaticMeshComponent->SetMaterial(0, GreenColorOfCell);
+		EndCursorOverMaterial = LastColorOfCell;
+
+		GridActorManager->SetHowManyFlags(GridActorManager->GetHowManyFlags() + 1);
+	}
+	else if (!bCellFlag && GridActorManager->GetHowManyFlags() > 0)
+	{
+		bCellFlag = true;
+		LastColorOfCell = StaticMeshComponent->GetMaterial(0);
+
+		StaticMeshComponent->SetMaterial(0, FlagColorOfCell);
+		EndCursorOverMaterial = FlagColorOfCell;
+
+		GridActorManager->SetHowManyFlags(GridActorManager->GetHowManyFlags() - 1);
+
+	}
 
 }
 
