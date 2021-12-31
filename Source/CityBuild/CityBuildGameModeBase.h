@@ -13,11 +13,11 @@ UCLASS()
 class CITYBUILD_API ACityBuildGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-private:
+public:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), BlueprintReadWrite, Category = "Points")
 		int32 TotalPoints = 0;
 
-public:
+
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), BlueprintReadWrite, Category = "Points")
 		bool GameOver = false;
 

@@ -62,16 +62,20 @@ void ACellActor::Tick(float DeltaTime)
 void ACellActor::Clicked(UPrimitiveComponent* touchedComponent, FKey buttonPressed)
 {
 	if (buttonPressed == EKeys::LeftMouseButton && !bCellFlag) {
-		
-		if(CellValue ==9 )
-		{
-			ACityBuildGameModeBase* GameMode = Cast< ACityBuildGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-			GameMode->GameOver = true;
-		}
-
 
 		StaticMeshComponent->SetMaterial(0, RedColorOfCell);
 		EndCursorOverMaterial = RedColorOfCell;
+
+		if(CellValue ==9 )
+		{
+			StaticMeshComponent->SetMaterial(0, BlueColorOfCell);
+			ACityBuildGameModeBase* GameMode = Cast< ACityBuildGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+			GameMode->GameOver = true;
+
+		}
+
+
+
 		//UE_LOG(LogTemp, Warning, TEXT(" Clicked PosX=%d, PosY=%d"), CellX, CellY);
 
 		GridActorManager->SetupMines(CellX,CellY);
@@ -80,7 +84,6 @@ void ACellActor::Clicked(UPrimitiveComponent* touchedComponent, FKey buttonPress
 	}
 	else if (buttonPressed == EKeys::RightMouseButton && !bCellVisible)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Some warning message"));
 		SetFlag();
 	}
 }
@@ -108,8 +111,16 @@ void ACellActor::SetFlag()
 	if (bCellFlag && GridActorManager->GetHowManyFlags() >= 0)
 	{
 		bCellFlag = false;
-		StaticMeshComponent->SetMaterial(0, GreenColorOfCell);
-		EndCursorOverMaterial = LastColorOfCell;
+		if (!bCellVisible) 
+		{
+			StaticMeshComponent->SetMaterial(0, GreenColorOfCell);
+			EndCursorOverMaterial = GreenColorOfCell;
+		}
+		else
+		{
+			StaticMeshComponent->SetMaterial(0, RedColorOfCell);
+			EndCursorOverMaterial = RedColorOfCell;
+		}
 
 		GridActorManager->SetHowManyFlags(GridActorManager->GetHowManyFlags() + 1);
 	}

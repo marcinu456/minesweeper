@@ -16,6 +16,7 @@ public:
 	// Sets default values for this actor's properties
 	AGridActor();
 
+	UFUNCTION(BlueprintCallable)
 	int32 GetHowManyFlags()
 	{
 		return HowManyFlags;
@@ -77,6 +78,8 @@ private:
 
 	
 	bool PlaceMines(int32 poz_x, int32 poz_y);
+
+	void GameOver();
 
 	bool bSetupMines;
 

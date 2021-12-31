@@ -108,7 +108,7 @@ bool AGridActor::PlaceMines(int32 PosX, int32 PosY)
 	if (CellActors[PosX * Height + PosY]->GetCellValue() != 9)
 	{
 		CellActors[PosX * Height + PosY]->SetCellValue(9);
-		CellActors[PosX * Height + PosY]->SetCellColorMine();
+		//CellActors[PosX * Height + PosY]->SetCellColorMine();
 
 
 
@@ -122,12 +122,16 @@ bool AGridActor::PlaceMines(int32 PosX, int32 PosY)
 				if (CellActors[(PosX + l) * Height + PosY + k]->GetCellValue() == 9) continue;
 
 				CellActors[(PosX + l) * Height + PosY + k]->SetCellValue(CellActors[(PosX + l) * Height + PosY + k]->GetCellValue() + 1);
-				CellActors[(PosX + l) * Height + PosY + k]->SetCellColor();
+				//CellActors[(PosX + l) * Height + PosY + k]->SetCellColor();
 
 			}
 	}
 
 	return true;
+}
+
+void AGridActor::GameOver()
+{
 }
 
 
@@ -142,6 +146,13 @@ void AGridActor::ShowGrid(int32 PosX, int32 PosY)
 		CellActors[PosY * Width + PosX]->SetCellVisible(true);  
 		HowManyToGo--;
 		//UE_LOG(LogTemp, Warning, TEXT(" HowManyToGo %d"), HowManyToGo);
+		if(HowManyToGo == Mines)
+		{
+			ACityBuildGameModeBase* GameMode = Cast< ACityBuildGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+			GameMode->GameOver = true;
+			GameMode->TotalPoints = Mines * 10;
+
+		}
 
 	}
 
@@ -159,5 +170,4 @@ void AGridActor::ShowGrid(int32 PosX, int32 PosY)
 }
 
 
-//TODO napraw odkrywanie planszy
-//TODO odkrywanie planszy, menu trudnoœci, umieszczanie min po pierwszym kliknieciu
+//TODO dodaj timer i napraw reset
