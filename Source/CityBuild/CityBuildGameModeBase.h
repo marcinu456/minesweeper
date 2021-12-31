@@ -17,6 +17,9 @@ private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), BlueprintReadWrite, Category = "Points")
 		int32 TotalPoints = 0;
 
+public:
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), BlueprintReadWrite, Category = "Points")
+		bool GameOver = false;
 
 
 };

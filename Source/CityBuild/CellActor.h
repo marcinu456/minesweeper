@@ -34,6 +34,7 @@ public:
 
 	void SetCellValue(int32 _CellValue) {
 		CellValue = _CellValue;
+		SetValueToWidget();
 	}
 
 	bool GetCellVisible()
@@ -81,6 +82,11 @@ public:
 
 
 	FORCEINLINE class UStaticMeshComponent* GetStaticMesh() const { return StaticMeshComponent; }
+protected:
+
+	UFUNCTION(BlueprintImplementableEvent, meta = (AllowPrivateAccess = "true", Category = "Cell Setup"))
+		void SetValueToWidget();
+
 private:
 	UFUNCTION()
 		void Clicked(UPrimitiveComponent* touchedComponent, FKey buttonPressed);
@@ -107,6 +113,9 @@ private:
 		}
 		
 	}
+
+
+
 
 	int32 CellX;
 	int32 CellY;
@@ -140,6 +149,7 @@ private:
 	//UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
 		UMaterialInterface* LastColorOfCell;
 
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, meta = (AllowPrivateAccess = "true", Category = "Cell Setup"))
 	int32 CellValue;
 
 	bool bCellVisible;

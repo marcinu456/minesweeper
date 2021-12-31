@@ -62,17 +62,23 @@ void ACellActor::Tick(float DeltaTime)
 void ACellActor::Clicked(UPrimitiveComponent* touchedComponent, FKey buttonPressed)
 {
 	if (buttonPressed == EKeys::LeftMouseButton && !bCellFlag) {
-		//CellVisible = true;
+		
+		if(CellValue ==9 )
+		{
+			ACityBuildGameModeBase* GameMode = Cast< ACityBuildGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+			GameMode->GameOver = true;
+		}
+
+
 		StaticMeshComponent->SetMaterial(0, RedColorOfCell);
 		EndCursorOverMaterial = RedColorOfCell;
 		UE_LOG(LogTemp, Warning, TEXT(" Clicked PosX=%d, PosY=%d"), CellX, CellY);
-
 
 		GridActorManager->SetupMines(CellX,CellY);
 
 		GridActorManager->ShowGrid(CellX, CellY);
 	}
-	else if (buttonPressed == EKeys::RightMouseButton)
+	else if (buttonPressed == EKeys::RightMouseButton && !bCellVisible)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Some warning message"));
 		SetFlag();
