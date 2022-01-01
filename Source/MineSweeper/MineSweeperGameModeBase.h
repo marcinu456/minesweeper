@@ -15,17 +15,14 @@ class MINESWEEPER_API AMineSweeperGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), BlueprintReadWrite, Category = "Points")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 TotalPoints = 0;
 
-
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), BlueprintReadWrite, Category = "Points")
-		bool GameOver = false;
-
-	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"), BlueprintReadWrite, Category = "Points")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class AGridActor* GridActor;
 
-	void SetGridActor(AGridActor* _GridActor);
+	UFUNCTION(BlueprintImplementableEvent)
+		void GameOver();
 
 protected:
 	// Called when the game starts or when spawned

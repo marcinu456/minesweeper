@@ -21,11 +21,11 @@ void AGridActor::BeginPlay()
 	Super::BeginPlay();
 
 	AMineSweeperGameModeBase* GameMode = Cast< AMineSweeperGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	GameMode->SetGridActor(this);
+	GameMode->GridActor = this;
 
 }
 
-void AGridActor::SetupGrid(const int32& _Width, const int32& _Height, const int32& _Mines)
+void AGridActor::SetupGrid(const int32 _Width, const int32 _Height, const int32 _Mines)
 {
 
 	for (auto& Cell : CellActors)
@@ -82,7 +82,7 @@ void AGridActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AGridActor::RandomPosition(int32& FirstPosX, int32& FirstPosY)
+void AGridActor::RandomPosition(const int32 FirstPosX, const int32 FirstPosY)
 {
 	int32 PosX, PosY;
 	int32 MinesToPlace = Mines;
@@ -110,27 +110,36 @@ void AGridActor::RandomPosition(int32& FirstPosX, int32& FirstPosY)
 	}
 }
 
-bool AGridActor::PlaceMines(int32 PosX, int32 PosY)
+bool AGridActor::PlaceMines(const int32 PosX, const int32 PosY)
 {
 	if (CellActors[PosY * Width + PosX]->GetCellValue() != 9)
 	{
 		CellActors[PosY * Width + PosX]->SetCellValue(9);
-		//CellMines.Add(CellActors[PosY * Width + PosX]);
-		CellActors[PosY * Width + PosX]->SetCellColorMine();
+		CellMines.Add(CellActors[PosY * Width + PosX]);
+		//CellActors[PosY * Width + PosX]->SetCellColorMine();
 
 
 
 		for (int k = -1; k < 2; k++)
 			for (int l = -1; l < 2; l++)
 			{
-				if ((PosX + l) < 0 || (PosY + k) < 0) continue;
-				if ((PosX + l) > Width - 1 || (PosY + k) > Height - 1) continue;
+				if ((PosX + l) < 0 || (PosY + k) < 0)
+				{
+					continue;
+				}
 
-				
-				if (CellActors[(PosY + k) * Width + PosX + l]->GetCellValue() == 9) continue;
+				if ((PosX + l) > Width - 1 || (PosY + k) > Height - 1)
+				{
+					continue;
+				}
+
+				if (CellActors[(PosY + k) * Width + PosX + l]->GetCellValue() == 9)
+				{
+					continue;
+				}
 
 				CellActors[(PosY + k) * Width + PosX + l]->SetCellValue(CellActors[(PosY + k) * Width + PosX + l]->GetCellValue() + 1);
-				CellActors[(PosY + k) * Width + PosX + l]->SetCellColor();
+				//CellActors[(PosY + k) * Width + PosX + l]->SetCellColor();
 
 			}
 	}
@@ -138,34 +147,51 @@ bool AGridActor::PlaceMines(int32 PosX, int32 PosY)
 	return true;
 }
 
-void AGridActor::GameOver()
+void AGridActor::GameOver(const int32 Points)
 {
+	for (auto& Cell : CellMines)
+	{
+		Cell->SetCellColorMine();
+	}
 
+	AMineSweeperGameModeBase* GameMode = Cast< AMineSweeperGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	GameMode->TotalPoints += Points * 10;
+	GameMode->GameOver();
 }
 
 
-void AGridActor::ShowGrid(int32 PosX, int32 PosY)
+void AGridActor::ShowGrid(const int32 PosX, const int32 PosY)
 {
-	if (PosX < 0 || PosX>Width - 1) return;
-	if (PosY < 0 || PosY>Height - 1) return;
-	if (CellActors[PosY * Width + PosX]->GetCellVisible() == true || CellActors[PosY * Width + PosX]->GetCellFlag() == true) return;
+	if (PosX < 0 || PosX>Width - 1) 
+	{
+		return;
+	}
+
+	if (PosY < 0 || PosY>Height - 1)
+	{
+		return;
+	}
+
+	if (CellActors[PosY * Width + PosX]->GetCellVisible() == true || CellActors[PosY * Width + PosX]->GetCellFlag() == true)
+	{
+		return;
+	}
 
 	if (CellActors[PosY * Width + PosX]->GetCellValue() != 9 && CellActors[PosY * Width + PosX]->GetCellVisible() == false)
 	{
 		CellActors[PosY * Width + PosX]->SetCellVisible(true);
 		HowManyToGo--;
-		//UE_LOG(LogTemp, Warning, TEXT(" HowManyToGo %d"), HowManyToGo);
 		if (HowManyToGo == Mines)
 		{
-			AMineSweeperGameModeBase* GameMode = Cast< AMineSweeperGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-			GameMode->GameOver = true;
-			GameMode->TotalPoints = Mines * 10;
-
+			GameOver(Mines);
 		}
 
 	}
 
-	if (CellActors[PosY * Width + PosX]->GetCellValue() != 0) return;
+	if (CellActors[PosY * Width + PosX]->GetCellValue() != 0)
+	{
+		return;
+	}
 
 	ShowGrid(PosX - 1, PosY - 1);
 	ShowGrid(PosX - 1, PosY);

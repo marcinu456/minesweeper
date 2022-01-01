@@ -27,9 +27,6 @@ ACellActor::ACellActor()
 	OnBeginCursorOver.Add(OnBeginCursorOverDelegate);
 	OnEndCursorOver.Add(OnEndCursorOverDelegate);
 
-	//OnClicked.AddUnique()
-
-
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshAsset(TEXT("/Game/Materials/Shape_Sphere.Shape_Sphere"));
 	if (SphereMeshAsset.Succeeded())
 	{
@@ -46,7 +43,6 @@ void ACellActor::BeginPlay()
 	Super::BeginPlay();
 
 	StaticMeshComponent->SetMaterial(0, GreenColorOfCell);
-	//CellValue = 0;
 	EndCursorOverMaterial = GreenColorOfCell;
 
 
@@ -66,17 +62,13 @@ void ACellActor::Clicked(UPrimitiveComponent* touchedComponent, FKey buttonPress
 		if (CellValue == 9)
 		{
 			StaticMeshComponent->SetMaterial(0, MineColorOfCell);
-			AMineSweeperGameModeBase* GameMode = Cast< AMineSweeperGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-			GameMode->GameOver = true;
-
+			GridActorManager->GameOver();
 		}
 		else
 		{
 			//UE_LOG(LogTemp, Warning, TEXT(" Clicked PosX=%d, PosY=%d"), CellX, CellY);
 
-			GridActorManager->SetupMines(CellX, CellY);
-
-			GridActorManager->ShowGrid(CellX, CellY);
+			GridActorManager->UpdateGrid(CellX, CellY);
 
 			StaticMeshComponent->SetMaterial(0, VisibleColorOfCell);
 			EndCursorOverMaterial = VisibleColorOfCell;
@@ -99,14 +91,7 @@ void ACellActor::BeginCursorOver()
 
 void ACellActor::EndCursorOver()
 {
-
-	//if (!Occupied) {
 	StaticMeshComponent->SetMaterial(0, EndCursorOverMaterial);
-	//}
-	//else {
-	//	StaticMeshComponent->SetMaterial(0, BlueColorOfCell);
-	//}
-
 }
 
 void ACellActor::SetFlag()

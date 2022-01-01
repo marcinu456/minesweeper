@@ -17,11 +17,11 @@ public:
 	AGridActor();
 
 	UFUNCTION(BlueprintCallable)
-		int32 GetHowManyFlags()
+	int32 GetHowManyFlags()
 	{
 		return HowManyFlags;
 	}
-	void SetHowManyFlags(int32 _HowManyFlags)
+	void SetHowManyFlags(const int32 _HowManyFlags)
 	{
 		HowManyFlags = _HowManyFlags;
 	}
@@ -34,22 +34,28 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void ShowGrid(int32 x, int32 y);
 
-
-	void SetupMines(int32& FirstPosX, int32& FirstPosY)
+	void UpdateGrid(const int32 PosX, const int32 PosY)
 	{
 		if (!bSetupMines)
 		{
-			RandomPosition(FirstPosX, FirstPosY);
+			RandomPosition(PosX, PosY);
 			bSetupMines = true;
 		}
+		ShowGrid(PosX, PosY);
 	}
 
 	UFUNCTION(BlueprintCallable)
-		void SetupGrid(const int32& Width, const int32& Height, const int32& Mines);
+		void SetupGrid(const int32 Width, const int32 Height, const int32 Mines);
+
+	void GameOver(const int32 Points = 0);
+
 
 private:
+
+	void ShowGrid(const int32 PosX, const int32 PosY);
+
+
 	UPROPERTY()
 		TArray<ACellActor*> CellActors; //row-major
 
@@ -77,12 +83,11 @@ private:
 private:
 
 
-	void RandomPosition(int32& FirstPosX, int32& FirstPosY);
+	void RandomPosition(const int32 FirstPosX, const int32 FirstPosY);
 
 
-	bool PlaceMines(int32 poz_x, int32 poz_y);
+	bool PlaceMines(const int32 PosX, const int32 PosY);
 
-	void GameOver();
 
 	bool bSetupMines;
 

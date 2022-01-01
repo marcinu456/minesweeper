@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MineSweeperGameModeBase.h"
 #include "GameFramework/Actor.h"
+#include "Kismet/GameplayStatics.h"
 #include "CellActor.generated.h"
 
 class AGridActor;
@@ -23,7 +25,7 @@ public:
 		y = CellY;
 	}
 
-	void SetCellPlace(int32 x, int32 y) {
+	void SetCellPlace(const int32 x, const int32 y) {
 		CellX = x;
 		CellY = y;
 	}
@@ -33,7 +35,7 @@ public:
 		return CellValue;
 	}
 
-	void SetCellValue(int32 _CellValue) {
+	void SetCellValue(const int32 _CellValue) {
 
 		CellValue = _CellValue;
 		SetValueToWidget();
@@ -41,16 +43,27 @@ public:
 
 	bool GetCellVisible()
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("GetCellVisible PosX=%d, PosY=%d"), CellX, CellY);
-
 		return bCellVisible;
 	}
 
-	void SetCellVisible(bool _CellVisible) {
+	void SetCellVisible(const bool _CellVisible) {
 		bCellVisible = _CellVisible;
-		//UE_LOG(LogTemp, Warning, TEXT("SetCellVisible PosX=%d, PosY=%d"), CellX, CellY);
-		StaticMeshComponent->SetMaterial(0, VisibleColorOfCell);
-		EndCursorOverMaterial = VisibleColorOfCell;
+
+		if (bCellVisible)
+		{
+			StaticMeshComponent->SetMaterial(0, VisibleColorOfCell);
+			EndCursorOverMaterial = VisibleColorOfCell;
+			AMineSweeperGameModeBase* GameMode = Cast<AMineSweeperGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+			GameMode->TotalPoints++;
+		}
+		else
+		{
+			StaticMeshComponent->SetMaterial(0, GreenColorOfCell);
+			EndCursorOverMaterial = GreenColorOfCell;
+		}
+
+
+
 	}
 
 	void SetCellColor() {
@@ -61,8 +74,6 @@ public:
 	void SetCellColorMine() {
 		StaticMeshComponent->SetMaterial(0, MineColorOfCell);
 		EndCursorOverMaterial = MineColorOfCell;
-		//UE_LOG(LogTemp, Warning, TEXT("Mine PosX=%d, PosY=%d"), CellX, CellY);
-
 	}
 
 	void SetGridActorManager(AGridActor* _GridActorManager) {

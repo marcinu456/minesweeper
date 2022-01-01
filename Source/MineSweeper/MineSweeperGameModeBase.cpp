@@ -8,7 +8,3 @@ void AMineSweeperGameModeBase::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AMineSweeperGameModeBase::SetGridActor(AGridActor* _GridActor)
-{
-	GridActor = _GridActor;
-}
