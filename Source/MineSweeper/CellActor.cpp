@@ -11,7 +11,7 @@
 ACellActor::ACellActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("CellRootComponent"));
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CellMesh"));
@@ -63,24 +63,27 @@ void ACellActor::Clicked(UPrimitiveComponent* touchedComponent, FKey buttonPress
 {
 	if (buttonPressed == EKeys::LeftMouseButton && !bCellFlag) {
 
-		StaticMeshComponent->SetMaterial(0, RedColorOfCell);
-		EndCursorOverMaterial = RedColorOfCell;
-
 		if (CellValue == 9)
 		{
-			StaticMeshComponent->SetMaterial(0, BlueColorOfCell);
+			StaticMeshComponent->SetMaterial(0, MineColorOfCell);
 			AMineSweeperGameModeBase* GameMode = Cast< AMineSweeperGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 			GameMode->GameOver = true;
 
 		}
+		else
+		{
+			//UE_LOG(LogTemp, Warning, TEXT(" Clicked PosX=%d, PosY=%d"), CellX, CellY);
+
+			GridActorManager->SetupMines(CellX, CellY);
+
+			GridActorManager->ShowGrid(CellX, CellY);
+
+			StaticMeshComponent->SetMaterial(0, VisibleColorOfCell);
+			EndCursorOverMaterial = VisibleColorOfCell;
+		}
 
 
 
-		//UE_LOG(LogTemp, Warning, TEXT(" Clicked PosX=%d, PosY=%d"), CellX, CellY);
-
-		GridActorManager->SetupMines(CellX, CellY);
-
-		GridActorManager->ShowGrid(CellX, CellY);
 	}
 	else if (buttonPressed == EKeys::RightMouseButton && !bCellVisible)
 	{
@@ -118,8 +121,8 @@ void ACellActor::SetFlag()
 		}
 		else
 		{
-			StaticMeshComponent->SetMaterial(0, RedColorOfCell);
-			EndCursorOverMaterial = RedColorOfCell;
+			StaticMeshComponent->SetMaterial(0, VisibleColorOfCell);
+			EndCursorOverMaterial = VisibleColorOfCell;
 		}
 
 		GridActorManager->SetHowManyFlags(GridActorManager->GetHowManyFlags() + 1);
@@ -127,7 +130,6 @@ void ACellActor::SetFlag()
 	else if (!bCellFlag && GridActorManager->GetHowManyFlags() > 0)
 	{
 		bCellFlag = true;
-		LastColorOfCell = StaticMeshComponent->GetMaterial(0);
 
 		StaticMeshComponent->SetMaterial(0, FlagColorOfCell);
 		EndCursorOverMaterial = FlagColorOfCell;

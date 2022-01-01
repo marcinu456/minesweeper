@@ -53,6 +53,9 @@ private:
 	UPROPERTY()
 		TArray<ACellActor*> CellActors; //row-major
 
+	UPROPERTY()
+		TArray<ACellActor*> CellMines; //row-major
+
 	/** Width of grid in number of cells. */
 	UPROPERTY(EditAnywhere, meta = (ClampMin = "1", AllowPrivateAccess = "true", Category = "Grid Setup"))
 		int32 Width = 50;

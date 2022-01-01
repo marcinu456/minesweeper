@@ -87,7 +87,7 @@ void AGridActor::RandomPosition(int32& FirstPosX, int32& FirstPosY)
 	int32 PosX, PosY;
 	int32 MinesToPlace = Mines;
 
-	//UE_LOG(LogTemp, Warning, TEXT("RandomPosition PosX=%d, PosY=%d"), FirstPosX, FirstPosY);
+	UE_LOG(LogTemp, Warning, TEXT("RandomPosition PosX=%d, PosY=%d"), FirstPosX, FirstPosY);
 
 
 	while (MinesToPlace > 0)
@@ -95,14 +95,9 @@ void AGridActor::RandomPosition(int32& FirstPosX, int32& FirstPosY)
 		PosX = FMath::RandRange(0, Width - 1);
 		PosY = FMath::RandRange(0, Height - 1);
 
-		if (PosX == FirstPosX && PosY == FirstPosY)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("RandomPosition PosX=%d, PosY=%d"), FirstPosX, FirstPosY);
+		if (PosY == FirstPosX && PosX == FirstPosY) continue;
 
-			continue;
-		}
-
-		if (CellActors[PosY * Width + PosX]->GetCellValue() != 9)
+		if (CellActors[PosX * Height + PosY]->GetCellValue() != 9)
 		{
 			PlaceMines(PosX, PosY);
 			MinesToPlace--;
@@ -112,11 +107,11 @@ void AGridActor::RandomPosition(int32& FirstPosX, int32& FirstPosY)
 
 bool AGridActor::PlaceMines(int32 PosX, int32 PosY)
 {
-	if (CellActors[PosY * Width + PosX]->GetCellValue() != 9)
+	if (CellActors[PosX * Height + PosY]->GetCellValue() != 9)
 	{
-		CellActors[PosY * Width + PosX]->SetCellValue(9);
-		//CellMines.Add(CellActors[PosY * Width + PosX]);
-		CellActors[PosY * Width + PosX]->SetCellColorMine();
+		CellActors[PosX * Height + PosY]->SetCellValue(9);
+		//CellMines.Add(CellActors[PosX * Height + PosY]);
+		CellActors[PosX * Height + PosY]->SetCellColorMine();
 
 
 
@@ -126,11 +121,11 @@ bool AGridActor::PlaceMines(int32 PosX, int32 PosY)
 				if ((PosX + l) < 0 || (PosY + k) < 0) continue;
 				if ((PosX + l) > Width - 1 || (PosY + k) > Height - 1) continue;
 
-				
-				if (CellActors[(PosY + k) * Width + PosX + l]->GetCellValue() == 9) continue;
 
-				CellActors[(PosY + k) * Width + PosX + l]->SetCellValue(CellActors[(PosY + k) * Width + PosX + l]->GetCellValue() + 1);
-				CellActors[(PosY + k) * Width + PosX + l]->SetCellColor();
+				if (CellActors[(PosX + l) * Height + PosY + k]->GetCellValue() == 9) continue;
+
+				CellActors[(PosX + l) * Height + PosY + k]->SetCellValue(CellActors[(PosX + l) * Height + PosY + k]->GetCellValue() + 1);
+				CellActors[(PosX + l) * Height + PosY + k]->SetCellColor();
 
 			}
 	}

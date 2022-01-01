@@ -49,18 +49,18 @@ public:
 	void SetCellVisible(bool _CellVisible) {
 		bCellVisible = _CellVisible;
 		//UE_LOG(LogTemp, Warning, TEXT("SetCellVisible PosX=%d, PosY=%d"), CellX, CellY);
-		StaticMeshComponent->SetMaterial(0, RedColorOfCell);
-		EndCursorOverMaterial = RedColorOfCell;
+		StaticMeshComponent->SetMaterial(0, VisibleColorOfCell);
+		EndCursorOverMaterial = VisibleColorOfCell;
 	}
 
 	void SetCellColor() {
-		StaticMeshComponent->SetMaterial(0, BlueColorOfCell);
-		EndCursorOverMaterial = BlueColorOfCell;
+		StaticMeshComponent->SetMaterial(0, DebugColorOfCell);
+		EndCursorOverMaterial = DebugColorOfCell;
 	}
 
 	void SetCellColorMine() {
-		StaticMeshComponent->SetMaterial(0, GreyColorOfCell);
-		EndCursorOverMaterial = GreyColorOfCell;
+		StaticMeshComponent->SetMaterial(0, MineColorOfCell);
+		EndCursorOverMaterial = MineColorOfCell;
 		//UE_LOG(LogTemp, Warning, TEXT("Mine PosX=%d, PosY=%d"), CellX, CellY);
 
 	}
@@ -106,30 +106,30 @@ private:
 	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* StaticMeshComponent;
 
-	/** Material for when the cell is alive. */
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
 		UMaterialInterface* ClickedMaterial;
-	/** Material for when player hovers over the cell in edit mode. */
+
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
 		UMaterialInterface* BeginCursorOverMaterial;
-	/** Material for when the cell is not alive in edit mode. */
+
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
 		UMaterialInterface* EndCursorOverMaterial;
-	/** Material for when the cell is not alive in edit mode. */
+
+
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
 		UMaterialInterface* GreenColorOfCell;
-	/** Material for when the cell is not alive in edit mode. */
+
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
-		UMaterialInterface* GreyColorOfCell;
-	/** Material for when the cell is not alive in edit mode. */
+		UMaterialInterface* VisibleColorOfCell;
+
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
-		UMaterialInterface* BlueColorOfCell;
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
-		UMaterialInterface* RedColorOfCell;
+		UMaterialInterface* MineColorOfCell;
+
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
 		UMaterialInterface* FlagColorOfCell;
-	//UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
-	UMaterialInterface* LastColorOfCell;
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", Category = "Materials"))
+		UMaterialInterface* DebugColorOfCell;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, meta = (AllowPrivateAccess = "true", Category = "Cell Setup"))
 		int32 CellValue;
